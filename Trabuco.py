@@ -163,22 +163,6 @@ def ssh_bruteforce():
         execute_command(file,command)
 
 
-def ssh_bruteforce():
-
-    print(YELLOW + "\n [+] Scanning for SSH Servers..." + RESET)
-    # Run nmap and check if there are available servers  
-    command=['nmap', '-p', '22', '--open', '-sS', '-n', '-Pn', '--min-rate', '1000', network]
-    ips = nmap_scans(command)
-    
-    if not ips: # Check if they were no servers detected.  
-        print(RED + "\n [!] No SSH Servers Found" + RESET) 
-    file = f"{network[:-3]}_SSH_Bruteforce_Output"
-
-    for i in ips: # Extract info from each server and save it to a file 
-        command = ['hydra', '-S', '-C', './resources/ssh-betterdefaultpasslist.txt', i, 'ssh'] 
-        print(ORANGE + "\n [+] Hydra is checking common SSH credentials at " + i + "\n" + RESET)
-        execute_command(file,command)
-
 def ftp_bruteforce():
 
     print( YELLOW + "\n [+] Scanning for FTP Servers..." + RESET)
@@ -191,7 +175,7 @@ def ftp_bruteforce():
     file = f"{network[:-3]}_FTP_Bruteforce_Output"
 
     for i in ips: # Extract info from each server and save it to a file 
-        command = ['hydra', '-S', '-C', './resources/ftp-betterdefaultpasslist.txt', i, 'ftp'] 
+        command = ['hydra', '-C', './resources/ftp-betterdefaultpasslist.txt', i, 'ftp'] 
         print(ORANGE + "\n [+] Hydra is checking common FTP credentials at " + i + "\n" + RESET)
         execute_command(file,command)
 
@@ -207,8 +191,8 @@ def telnet_bruteforce():
     file = f"{network[:-3]}_Telnet_Bruteforce_Output"
 
     for i in ips: # Extract info from each server and save it to a file 
-        command = ['hydra', '-S', '-C', './resources/telnet-betterdefaultpasslist.txt', i, 'ftp'] 
-        print(ORANGE + "\n [+] Hydra is checking common FTP credentials at " + i + "\n" + RESET)
+        command = ['hydra', '-C', './resources/telnet-betterdefaultpasslist.txt', i, 'telnet'] 
+        print(ORANGE + "\n [+] Hydra is checking common Telnet credentials at " + i + "\n" + RESET)
         execute_command(file,command)
 
 if __name__ == "__main__":
@@ -244,7 +228,7 @@ if __name__ == "__main__":
     network = args.Network # Save the network range 
     
    # Go to function and create the directory 
-    if not (args.a or args.u or args.s or args.p or args.d or args.f or args.t):
+    if not (args.a or args.b or args.u or args.s or args.p or args.d or args.f or args.t):
         parser.print_help()
     else:
         subprocess.run(['mkdir', network[:-3]],stderr=subprocess.DEVNULL)
@@ -270,5 +254,5 @@ if __name__ == "__main__":
         if args.t:
             telnet_bruteforce()
 
-    subprocess.run(['rm', 'hydra.restore'])
+    subprocess.run(['rm', 'hydra.restore'],stderr=subprocess.DEVNULL)
     print(GREEN + "\n [V] Exiting Trabuco..." + RESET)    
