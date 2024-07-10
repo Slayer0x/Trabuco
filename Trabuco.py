@@ -158,7 +158,7 @@ def ssh_bruteforce():
     file = f"{network[:-3]}_SSH_Servers_Bruteforce_Output"
 
     for i in ips: # Extract info from each server and save it to a file 
-        command = ['hydra', '-S', '-C', './resources/ssh-betterdefaultpasslist.txt', i, 'ssh'] 
+        command = ['hydra', '-C', './resources/ssh-betterdefaultpasslist.txt', i, 'ssh'] 
         print(ORANGE +"\n [+] Hydra is checking common SSH credentials at" + i + "\n" + RESET)
         execute_command(file,command)
 
