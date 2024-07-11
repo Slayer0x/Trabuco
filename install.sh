@@ -13,23 +13,27 @@ fi
 
 # Updating Packets
 echo -e "${ORANGE}[+] Updating Packets${NC}"
-apt-get update &> /dev/null
+apt update &> /dev/null
 
 # Installing Netexec
 echo -e "${ORANGE}[+] Installing netexec${NC}"
-apt-get install -y netexec &> /dev/null
+apt install -y netexec &> /dev/null
 
 # Installing hydra
 echo -e "${ORANGE}[+] Installing hydra${NC}"
-apt-get install -y hydra &> /dev/null
+apt install -y hydra &> /dev/null
 
 # Installing snmp
 echo -e "${ORANGE}[+] Installing snmp${NC}"
-apt-get install -y snmp &> /dev/null
+apt install -y snmp &> /dev/null
 
 # Installing nmap
 echo -e "${ORANGE}[+] Installing nmap${NC}"
-apt-get install -y nmap &> /dev/null
+apt install -y nmap &> /dev/null
+
+# Installing gowitness
+echo -e "${ORANGE}[+] Installing gowitness${NC}"
+apt install -y gowitness &> /dev/null
 
 echo -e "${GREEN}[V] Installation complete${NC}"
 echo -e "${GREEN}[V] Execute python3 ./Trabuco.py"
