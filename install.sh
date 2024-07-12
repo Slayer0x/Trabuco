@@ -35,5 +35,9 @@ apt install -y nmap &> /dev/null
 echo -e "${ORANGE}[+] Installing gowitness${NC}"
 apt install -y gowitness &> /dev/null
 
+# Installing Seclists
+echo -e "${ORANGE}[+] Installing Seclists${NC}"
+apt install -y seclists &> /dev/null
+
 echo -e "${GREEN}[V] Installation complete${NC}"
 echo -e "${GREEN}[V] Execute python3 ./Trabuco.py"

@@ -56,7 +56,7 @@ def execute_command(command,file=None):
         
         if file is not None:
             # Open the output file in append mode
-            dir = (network[:-3])
+            dir = f'{current_path}/{network[:-3]}'
             with open(str(dir + '/' + file), "a") as file_write:
                 # Read the output from the master_fd in a loop and print the output, also write to file.
                 while True:
@@ -108,54 +108,63 @@ def nmap_scans(nmap):
 
 
 def cme_check(i):
+        
+        directory_path = f'{current_path}/{network[:-3]}/CME'
+        if not os.path.exists(directory_path):
+            subprocess.run(['mkdir', '-p', directory_path], check=True, stderr=subprocess.DEVNULL)
+
         match i:
             case 0: #All checks.  
                 command =['netexec', 'smb', network, '--shares'] 
-                file = f"{network[:-3]}_shares"
+                file = f"CME/{network[:-3]}_Shares"
                 print(ORANGE + "\n [+] NetExec is looking for Unrestricted Accessible Network Resources \n" + RESET)
                 execute_command(command,file)
 
                 command = ['netexec', 'smb', network, '--users'] 
-                file = f"{network[:-3]}_users"
+                file = f"CME/{network[:-3]}_Users"
                 print(ORANGE + "\n [+] NetExec is trying to enumerate Users \n" + RESET)
                 execute_command(command,file)
 
                 command = ['netexec', 'smb', network, '--rid-brute'] 
-                file = f"{network[:-3]}_users"
+                file = f"CME/{network[:-3]}_Users"
                 print(ORANGE + "\n [+] NetExec is trying to bruteforce RIDs \n"+ RESET)
                 execute_command(command,file)
 
                 command = ['netexec', 'smb', network, '--pass-pol'] 
-                file = f"{network[:-3]}_passpol"
+                file = f"CME/{network[:-3]}_PassPol"
                 print(ORANGE + "\n [+] NetExec is trying to enumerate password policies \n"+ RESET)
                 execute_command(command,file)
 
             case 1: #Enum Shares  
                 command =['netexec', 'smb', network, '--shares'] 
-                file = f"{network[:-3]}_shares"
+                file = f"CME/{network[:-3]}_Shares"
                 print(ORANGE + "\n [+] NetExec is looking for Unrestricted Accessible Network Resources \n"+ RESET)
                 execute_command(command,file)
         
             case 2: #Enum Users 
                 command = ['netexec', 'smb', network, '--users'] 
-                file = f"{network[:-3]}_users"
+                file = f"CME/{network[:-3]}_Users"
                 print(ORANGE + "\n [+] NetExec is trying to enumerate Users \n"+ RESET)
                 execute_command(command,file)
 
                 command = ['netexec', 'smb', network, '--rid-brute'] 
-                file = f"{network[:-3]}_users"
+                file = f"CME/{network[:-3]}_Users"
                 print(ORANGE + "\n [+] NetExec is trying to bruteforce RIDs \n"+ RESET)
                 execute_command(command,file)
 
             case 3: #Enum Pass-Pol 
                 command = ['netexec', 'smb', network, '--pass-pol'] 
-                file = f"{network[:-3]}_passpol"
+                file = f"CME/{network[:-3]}_PassPol"
                 print(ORANGE + "\n [+] NetExec is trying to enumerate password policies \n" + RESET)
                 execute_command(command,file)
                 
 
 def dump_snmp():
     
+    #Paths to create dirs  
+    directory_path = f'{current_path}/{network[:-3]}/SNMP'
+    file = f"SNMP/{network[:-3]}_SNMP_Servers_Output" 
+
     print(YELLOW + "\n [+] Scanning for SNMP Servers... \n" + RESET)
     # Run nmap and check if there are available servers.  
     command=['nmap', '-p', '191', '--open', '-sS', '-n', '-Pn', '--min-rate', '1000', network]
@@ -165,14 +174,20 @@ def dump_snmp():
         print(RED + "\n [!] No SNMP Servers Found \n" + RESET) 
     
     else:
+        if not os.path.exists(directory_path):
+            subprocess.run(['mkdir', '-p', directory_path], check=True, stderr=subprocess.DEVNULL)
+    
         for i in ips: # Extract info from each server and save it to a file. 
-            file = f"{network[:-3]}_SNMP_Full_Output"
             command = ['snmpwalk', '-v2c', '-c', 'public', i, '.1'] 
             print(ORANGE + "\n [+] snmpwalk is trying to dump the information at " + i + "\n" + RESET)
             execute_command(command,file)
 
 
 def ssh_bruteforce():
+
+    #Paths to create dirs  
+    directory_path = f'{current_path}/{network[:-3]}/Bruteforce'
+    file = f"Bruteforce/{network[:-3]}_SSH_Servers_Bruteforce_Output"    
 
     print(YELLOW + "\n [+] Scanning for SSH Servers... \n" + RESET)
     # Run nmap and check if there are available servers.  
@@ -183,14 +198,21 @@ def ssh_bruteforce():
         print(RED + "\n [!] No SSH Servers Found \n" + RESET) 
     
     else:
-        file = f"{network[:-3]}_SSH_Servers_Bruteforce_Output"    
+        if not os.path.exists(directory_path):
+            subprocess.run(['mkdir', '-p', directory_path], check=True, stderr=subprocess.DEVNULL)
+        
         for i in ips: # Extract info from each server and save it to a file. 
-            command = ['hydra', '-C', './resources/ssh-betterdefaultpasslist.txt', i, 'ssh'] 
+            command = ['hydra', '-C', '/usr/share/seclists/Passwords/Default-Credentials/ssh-betterdefaultpasslist.txt', i, 'ssh'] 
             print(ORANGE +"\n [+] Hydra is checking common SSH credentials at " + i + "\n" + RESET)
             execute_command(command,file)
 
 
 def ftp_bruteforce():
+
+    #Paths to create dirs  
+    directory_path = f'{current_path}/{network[:-3]}/Bruteforce'
+    file = f"Bruteforce/{network[:-3]}_FTP_Servers_Bruteforce_Output"
+
 
     print( YELLOW + "\n [+] Scanning for FTP Servers... \n" + RESET)
     # Run nmap and check if there are available servers.  
@@ -201,14 +223,20 @@ def ftp_bruteforce():
         print(RED +"\n [!] No FTP Servers Found \n" + RESET) 
 
     else:
+        if not os.path.exists(directory_path):
+            subprocess.run(['mkdir', '-p', directory_path], check=True, stderr=subprocess.DEVNULL)
+
         for i in ips: # Extract info from each server and save it to a file. 
-            file = f"{network[:-3]}_FTP_Bruteforce_Output"
-            command = ['hydra', '-C', './resources/ftp-betterdefaultpasslist.txt', i, 'ftp'] 
+            command = ['hydra', '-C', '/usr/share/seclists/Passwords/Default-Credentials/ftp-betterdefaultpasslist.txt', i, 'ftp'] 
             print(ORANGE + "\n [+] Hydra is checking common FTP credentials at \n " + i + "\n" + RESET)
             execute_command(command,file)
 
 
 def telnet_bruteforce():
+
+    #Paths to create dirs  
+    directory_path = f'{current_path}/{network[:-3]}/Bruteforce'
+    file = f"Bruteforce/{network[:-3]}_Telnet_Servers_Bruteforce_Output"
 
     print(YELLOW + "\n [+] Scanning for Telent Servers... \n" + RESET)
     # Run nmap and check if there are available servers.
@@ -219,31 +247,41 @@ def telnet_bruteforce():
         print(RED + "\n [!] No Telnet Servers Found \n" + RESET) 
     
     else:
-        file = f"{network[:-3]}_Telnet_Bruteforce_Output"
+        if not os.path.exists(directory_path):
+            subprocess.run(['mkdir', '-p', directory_path], check=True, stderr=subprocess.DEVNULL)
+        
         for i in ips: # Extract info from each server and save it to a file.
-            command = ['hydra', '-C', './resources/telnet-betterdefaultpasslist.txt', i, 'telnet'] 
+            command = ['hydra', '-C', '/usr/share/seclists/Passwords/Default-Credentials/telnet-betterdefaultpasslist.txt', i, 'telnet'] 
             print(ORANGE + "\n [+] Hydra is checking common Telnet credentials at " + i + "\n" + RESET)
             execute_command(command,file)
 
 
 def go_witness():
 
+    #Paths to create dirs  
+    directory_path = f'{current_path}/{network[:-3]}/GoWitness'
+    file = f"GoWitness/{network[:-3]}_GoWitness_Command_Output"
+
     print(YELLOW + "\n [+] Scanning for Web Servers... This might take a while, don´t exit [+] \n" + RESET)
     # Run nmap and check if there are available servers.
-    filename = f"{network[:-3]}/{network[:-3]}_scan.xml"
-    command=['nmap', '-p-', '--open', '-sS', '-n', '-Pn', '--min-rate', '1000', network, '-oX', filename]
+    filename = f"{network[:-3]}/{network[:-3]}_scan"
+    command=['nmap', '-p-', '--open', '-sS', '-n', '-Pn', '--min-rate', '1000', network, '-oA', filename]
     ips = nmap_scans(command)
     
     if not ips: # Check if they were no servers detected.  
         print(RED + "\n [!] No Web Servers Found \n" + RESET)
 
-    else: #Set File name and command
+    else:
+        if not os.path.exists(directory_path):
+            subprocess.run(['mkdir', '-p', directory_path], check=True, stderr=subprocess.DEVNULL)
+            subprocess.run(['mkdir', '-p', directory_path + '/Nmap'], check=True, stderr=subprocess.DEVNULL)
+
         print(GREEN + "\n [V] Possible Web Servers Found \n" + RESET)   
-        file = f"GoWitness_Command_Output"
-        command = ['gowitness', 'nmap', '-f', filename, '-P', f"{network[:-3]}/WebServers"] 
+        subprocess.run(['mv', filename + '.xml',filename + '.gnmap',filename + '.nmap', directory_path + '/Nmap/'], check=True, stderr=subprocess.DEVNULL)
+        command = ['gowitness', 'nmap', '-f', directory_path + '/Nmap/' + str(network[:-3]) + '_scan' + '.xml', '-P', f"{directory_path}/WebServers"] 
         print(ORANGE + "\n [+] GoWitness is checking for accessible Web Servers \n" + RESET)
         execute_command(command,file)
-        subprocess.run(['chmod', '755', '-R', f"{network[:-3]}/WebServers"]) #We need to change rights cause the script is executed as root. 
+        subprocess.run(['chmod', '755', '-R', f"{directory_path}/WebServers"]) #We need to change rights cause the script is executed as root. 
         subprocess.run(['rm', './gowitness.sqlite3']) #Remove SQLite DB generated by gowitness. 
 
 
@@ -286,7 +324,9 @@ if __name__ == "__main__":
         parser.print_help()
     else:
         # Go to function and create the directory 
-        subprocess.run(['mkdir', network[:-3]],stderr=subprocess.DEVNULL)
+        result_pwd  = subprocess.run(['pwd'], capture_output=True, text=True)
+        current_path = result_pwd.stdout.strip()
+        subprocess.run(['mkdir', '-p', f'{current_path}/{network[:-3]}'],stderr=subprocess.DEVNULL)
         print(PURPLE + "\n [i] Output will be saved at " + './'+ str(network[:-3]) + RESET)
 
         if args.a:
