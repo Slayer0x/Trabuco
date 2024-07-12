@@ -21,7 +21,12 @@ Clone the repository.
 ## Usage/Examples
 
 ```bash
-usage: Trabuco.py [-h] [-a] [-b] [-u] [-s] [-p] [-d] [-f] [-t] Network
+usage: Trabuco.py [-h] [-a] [-b] [-u] [-s] [-p] [-d] [-f] [-t] [-g] Network
+
+Trabuco Help Menu
+
+positional arguments:
+  Network     Network range to scan (e.g., 192.168.0.0/24)
 
 options:
   -h, --help  show this help message and exit
@@ -33,11 +38,13 @@ options:
   -d          Check for default SSH credentials
   -f          Check for default FTP credentials
   -t          Check for default Telnet credentials
+  -g          Screenshot available Web Servers
 
 Examples:
          1. python3 Trabuco.py -a 192.168.1.0/24 -> Run all checks
          2. python3 Trabuco.py -usp 192.168.1.0/24 -> Run only AD Checks
-         3. python3 Trabuco.py -df 192.168.0.0/16-> Runs checks for FTP/SSH Default Creds
+         3. python3 Trabuco.py -df 192.168.0.0/16 -> Runs checks for FTP/SSH Default Creds
+         4. python3 Trabuco.py -g 192.168.0.0/16 -> Scans and saves Screenshots from Web Servers
 
 ```
 
