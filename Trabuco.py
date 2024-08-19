@@ -115,45 +115,45 @@ def cme_check(i):
 
         match i:
             case 0: #All checks.  
-                command =['netexec', 'smb', network, '--shares'] 
+                command =['netexec', 'smb',  network, '-u', '', '-p', '', '--shares'] 
                 file = f"CME/{network[:-3]}_Shares"
                 print(ORANGE + "\n [+] NetExec is looking for Unrestricted Accessible Network Resources \n" + RESET)
                 execute_command(command,file)
 
-                command = ['netexec', 'smb', network, '--users'] 
+                command = ['netexec', 'smb', network, '-u', '', '-p', '', '--users'] 
                 file = f"CME/{network[:-3]}_Users"
                 print(ORANGE + "\n [+] NetExec is trying to enumerate Users \n" + RESET)
                 execute_command(command,file)
 
-                command = ['netexec', 'smb', network, '--rid-brute'] 
+                command = ['netexec', 'smb', network, '-u', '', '-p', '', '--rid-brute'] 
                 file = f"CME/{network[:-3]}_Users"
                 print(ORANGE + "\n [+] NetExec is trying to bruteforce RIDs \n"+ RESET)
                 execute_command(command,file)
 
-                command = ['netexec', 'smb', network, '--pass-pol'] 
+                command = ['netexec', 'smb', network, '-u', '', '-p', '', '--pass-pol'] 
                 file = f"CME/{network[:-3]}_PassPol"
                 print(ORANGE + "\n [+] NetExec is trying to enumerate password policies \n"+ RESET)
                 execute_command(command,file)
 
             case 1: #Enum Shares  
-                command =['netexec', 'smb', network, '--shares'] 
+                command =['netexec', 'smb', network, '-u', '', '-p', '', '--shares'] 
                 file = f"CME/{network[:-3]}_Shares"
                 print(ORANGE + "\n [+] NetExec is looking for Unrestricted Accessible Network Resources \n"+ RESET)
                 execute_command(command,file)
         
             case 2: #Enum Users 
-                command = ['netexec', 'smb', network, '--users'] 
+                command = ['netexec', 'smb', network, '-u', '', '-p', '', '--users'] 
                 file = f"CME/{network[:-3]}_Users"
                 print(ORANGE + "\n [+] NetExec is trying to enumerate Users \n"+ RESET)
                 execute_command(command,file)
 
-                command = ['netexec', 'smb', network, '--rid-brute'] 
+                command = ['netexec', 'smb', network, '-u', '', '-p', '', '--rid-brute'] 
                 file = f"CME/{network[:-3]}_Users"
                 print(ORANGE + "\n [+] NetExec is trying to bruteforce RIDs \n"+ RESET)
                 execute_command(command,file)
 
             case 3: #Enum Pass-Pol 
-                command = ['netexec', 'smb', network, '--pass-pol'] 
+                command = ['netexec', 'smb', network, '-u', '', '-p', '', '--pass-pol'] 
                 file = f"CME/{network[:-3]}_PassPol"
                 print(ORANGE + "\n [+] NetExec is trying to enumerate password policies \n" + RESET)
                 execute_command(command,file)
@@ -265,7 +265,7 @@ def go_witness():
     print(YELLOW + "\n [+] Scanning for Web Servers... This might take a while, don´t exit [+] \n" + RESET)
     # Run nmap and check if there are available servers.
     filename = f"{network[:-3]}/{network[:-3]}_scan"
-    command=['nmap', '-p-', '--open', '-sS', '-n', '-Pn', '--min-rate', '1000', network, '-oA', filename]
+    command=['nmap', '-p-', '--open', '-sS', '-n', '-Pn', '--min-rate', '5000', '-T', '5', network, '-oA', filename]
     ips = nmap_scans(command)
     
     if not ips: # Check if they were no servers detected.  
