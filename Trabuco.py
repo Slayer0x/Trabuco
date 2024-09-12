@@ -167,7 +167,7 @@ def dump_snmp():
 
     print(YELLOW + "\n [+] Scanning for SNMP Servers... \n" + RESET)
     # Run nmap and check if there are available servers.  
-    command=['nmap', '-p', '191', '--open', '-sS', '-n', '-Pn', '--min-rate', '1000', network]
+    command=['nmap', '-p', '191', '--open', '-sU', '-n', '-Pn', '--min-rate', '1000', network]
     ips = nmap_scans(command)
     
     if not ips: # Check if they were no servers detected.  
